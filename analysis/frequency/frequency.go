@@ -2,32 +2,46 @@
 package frequency
 
 import (
+	"sync"
 	"unicode"
+
 	"github.com/Kareky/cryptography/internal/alphabet"
 )
 
+// FreqResult holds letter frequencies for a specific alphabet.
+type FreqResult struct {
+    alphabet alphabet.Alphabet
+    counts   []int
+	once     sync.Once
+    m        map[rune]int
+}
 
-func LetterFrequency(text string, alphabet alphabet.Alphabet) []int {
-	freq := make([]int, alphabet.Len())
+// LetterFrequency counts how many times each letter of the given alphabet
+// appears in text. It lowercases the text and ignores characters not in the alphabet.
+// The returned slice has length a.Len(). It return FreqResult,
+// which can be cast to the desired result.
+func LetterFrequency(text string, a alphabet.Alphabet) *FreqResult {
+	freq := make([]int, a.Len())
 	for _, char := range text {
 		char = unicode.ToLower(char)
-		if pos, ok := alphabet.Position(char); ok {
+		if pos, ok := a.Position(char); ok {
 			freq[pos]++
 		}
 	}
 
-	return freq
+	return &FreqResult{alphabet: a, counts: freq}
 }
 
-func FromArrayToMap(freq []int, a alphabet.Alphabet) map[rune]int {
-	if len(freq) != a.Len() {
-		return nil
-	}
+// Slice returns the frequency counts as a slice (index = position in alphabet).
+func (fr *FreqResult) Slice() []int { return fr.counts }
 
-	freqMap := make(map[rune]int, a.Len())
-	for i := 0; i < a.Len(); i++ {
-		freqMap[a.RuneFor(i)] = freq[i]
-	}
-
-	return freqMap
+// Map returns the frequency counts as a map[rune]int.
+func (fr *FreqResult) Map() map[rune]int {
+    fr.once.Do(func() {
+        fr.m = make(map[rune]int, fr.alphabet.Len())
+        for i := 0; i < fr.alphabet.Len(); i++ {
+            fr.m[fr.alphabet.RuneFor(i)] = fr.counts[i]
+        }
+    })
+    return fr.m
 }

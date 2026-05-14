@@ -1,6 +1,7 @@
 package alphabet_test
 
 import (
+	"slices"
 	"testing"
 	"github.com/Kareky/cryptography/internal/alphabet"
 )
@@ -111,6 +112,32 @@ func TestRuneFor(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.args.Alphabet.RuneFor(tt.args.position); got != tt.want {
 				t.Errorf("RuneFor() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestToSlice(t *testing.T) {
+	type args struct {
+		Alphabet	alphabet.Alphabet
+	}
+	tests := []struct {
+		name string
+		args args
+		want []rune
+	}{
+		{
+			name: "Latin alphabet to slice",
+			args: args{
+				Alphabet:	alphabet.LatinAlphabet,
+			},
+			want: []rune("abcdefghijklmnopqrstuvwxyz"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.args.Alphabet.ToSlice(); !slices.Equal(got, tt.want) {
+				t.Errorf("ToSlice() = %v, want %v", got, tt.want)
 			}
 		})
 	}
