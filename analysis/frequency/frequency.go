@@ -7,7 +7,7 @@ import (
 )
 
 
-func LetterFrequencyLatin(text string, alphabet alphabet.Alphabet) []int {
+func LetterFrequency(text string, alphabet alphabet.Alphabet) []int {
 	freq := make([]int, alphabet.Len())
 	for _, char := range text {
 		char = unicode.ToLower(char)
