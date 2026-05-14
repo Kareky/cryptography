@@ -7,117 +7,83 @@ import (
 
 func TestShiftLetter(t *testing.T) {
 	type args struct {
-		letter  rune
-		shift   int
-		isUpper bool
+		letter 		rune
+		shift  		int
+		Alphabet	alphabet.Alphabet
 	}
 	tests := []struct {
-		name string
-		args args
-		want rune
+		name		string
+		args		args
+		want		rune
 	}{
 		{
-			name: "Shift 'a' by 1, lowercase",
+			name: "Shift 'a' by 1",
 			args: args{
-				letter:  'a',
-				shift:   1,
-				isUpper: false,
+				letter:  	'a',
+				shift:   	1,
+				Alphabet: 	alphabet.LatinAlphabet,
 			},
 			want: 'b',
 		},
 		{
-			name: "Shift 'z' by 1, lowercase",
+			name: "Shift 'z' by 1",
 			args: args{
-				letter:  'z',
-				shift:   1,
-				isUpper: false,
+				letter:  	'z',
+				shift:   	1,
+				Alphabet: 	alphabet.LatinAlphabet,
 			},
 			want: 'a',
-		},
-		{
-			name: "Shift 'A' by -1, uppercase",
-			args: args{
-				letter:  'A',
-				shift:   -1,
-				isUpper: true,
-			},
-			want: 'Z',
-		},
-		{
-			name: "Shift 'Z' by -1, uppercase",
-			args: args{
-				letter:  'Z',
-				shift:   -1,
-				isUpper: true,
-			},
-			want: 'Y',
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := alphabet.ShiftLetter(tt.args.letter, tt.args.shift, tt.args.isUpper); got != tt.want {
+			if got := alphabet.ShiftLetter(tt.args.letter, tt.args.shift, tt.args.Alphabet); got != tt.want {
 				t.Errorf("ShiftLetter() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestFromAlphabetToPosition(t *testing.T) {
+func TestPosition(t *testing.T) {
 	type args struct {
-		letter  rune
-		isUpper bool
+		letter  	rune
+		Alphabet	alphabet.Alphabet
 	}
 	tests := []struct {
-		name string
-		args args
-		want int
+		name 		string
+		args 		args
+		want 		int
 	}{
 		{
-			name: "Position of 'a', lowercase",
+			name: "Position of 'a'",
 			args: args{
-				letter:  'a',
-				isUpper: false,
+				letter:   	'a',
+				Alphabet:	alphabet.LatinAlphabet,
 			},
-			want: 1,
+			want: 0,
 		},
 		{
-			name: "Position of 'z', lowercase",
+			name: "Position of 'z'",
 			args: args{
 				letter:  'z',
-				isUpper: false,
+				Alphabet:	alphabet.LatinAlphabet,
 			},
-			want: 26,
-		},
-		{
-			name: "Position of 'A', uppercase",
-			args: args{
-				letter:  'A',
-				isUpper: true,
-			},
-			want: 1,
-		},
-		{
-			name: "Position of 'Z', uppercase",
-			args: args{
-				letter:  'Z',
-				isUpper: true,
-			},
-			want: 26,
+			want: 25,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := alphabet.FromAlphabetToPosition(tt.args.letter, tt.args.isUpper); got != tt.want {
-				t.Errorf("FromAlphabetToPosition() = %v, want %v", got, tt.want)
+			if got, ok := tt.args.Alphabet.Position(tt.args.letter); got != tt.want || !ok {
+				t.Errorf("Position() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestFromPositionToAlphabet(t *testing.T) {
+func TestRuneFor(t *testing.T) {
 	type args struct {
 		position int
-		toUpper bool
+		Alphabet	alphabet.Alphabet
 	}
 	tests := []struct {
 		name string
@@ -125,42 +91,26 @@ func TestFromPositionToAlphabet(t *testing.T) {
 		want rune
 	}{
 		{
-			name: "Letter at position 1, lowercase",
+			name: "Letter at position 0",
 			args: args{
-				position: 1,
-				toUpper: false,
+				position: 0,
+				Alphabet:	alphabet.LatinAlphabet,
 			},
 			want: 'a',
 		},
 		{
-			name: "Letter at position 26, lowercase",
+			name: "Letter at position 25",
 			args: args{
-				position: 26,
-				toUpper: false,
+				position: 25,
+				Alphabet:	alphabet.LatinAlphabet,
 			},
 			want: 'z',
-		},
-		{
-			name: "Letter at position 1, uppercase",
-			args: args{
-				position: 1,
-				toUpper: true,
-			},
-			want: 'A',
-		},
-		{
-			name: "Letter at position 26, uppercase",
-			args: args{
-				position: 26,
-				toUpper: true,
-			},
-			want: 'Z',
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := alphabet.FromPositionToAlphabet(tt.args.position, tt.args.toUpper); got != tt.want {
-				t.Errorf("FromPositionToAlphabet() = %v, want %v", got, tt.want)
+			if got := tt.args.Alphabet.RuneFor(tt.args.position); got != tt.want {
+				t.Errorf("RuneFor() = %v, want %v", got, tt.want)
 			}
 		})
 	}
