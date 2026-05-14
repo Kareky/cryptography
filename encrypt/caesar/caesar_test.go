@@ -1,8 +1,8 @@
-package caesarCypher_test
+package caesar_test
 
 import (
 	"testing"
-	"github.com/Kareky/cryptography/encrypt/caesar-cypher"
+	"github.com/Kareky/cryptography/encrypt/caesar"
 )
 
 func TestEncrypt(t *testing.T) {
@@ -55,7 +55,7 @@ func TestEncrypt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := caesarCypher.Encrypt(tt.args.text, tt.args.shift, tt.args.preserveUppercase); got != tt.want {
+			if got := caesar.Encrypt(tt.args.text, tt.args.shift, tt.args.preserveUppercase); got != tt.want {
 				t.Errorf("Encrypt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -112,7 +112,7 @@ func TestDecrypt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := caesarCypher.Decrypt(tt.args.text, tt.args.shift, tt.args.preserveUppercase); got != tt.want {
+			if got := caesar.Decrypt(tt.args.text, tt.args.shift, tt.args.preserveUppercase); got != tt.want {
 				t.Errorf("Decrypt() = %v, want %v", got, tt.want)
 			}
 		})
