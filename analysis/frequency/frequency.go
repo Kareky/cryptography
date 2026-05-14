@@ -18,3 +18,16 @@ func LetterFrequency(text string, alphabet alphabet.Alphabet) []int {
 
 	return freq
 }
+
+func FromArrayToMap(freq []int, a alphabet.Alphabet) map[rune]int {
+	if len(freq) != a.Len() {
+		return nil
+	}
+
+	freqMap := make(map[rune]int, a.Len())
+	for i := 0; i < a.Len(); i++ {
+		freqMap[a.RuneFor(i)] = freq[i]
+	}
+
+	return freqMap
+}
