@@ -11,12 +11,12 @@ import (
 // The function returns the shifted string, always lowercase,
 // preserving each space or symbol as it was in the original message.
 func Encrypt(text string, shift int, a alphabet.Alphabet) string {
-	var newText strings.Builder
-	for _, character := range text {
-		character = unicode.ToLower(character)
-		newText.WriteRune(alphabet.ShiftLetter(character, shift, a))
+	var encryptedStr strings.Builder
+	for _, char := range text {
+		char = unicode.ToLower(char)
+		encryptedStr.WriteRune(alphabet.ShiftLetter(char, shift, a))
 	}
-	return newText.String()
+	return encryptedStr.String()
 }
 
 // Decrypt takes an encrypted message and decrypts it using a shift.
