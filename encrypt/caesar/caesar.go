@@ -29,7 +29,11 @@ func encrypt(text string, shift int, a alphabet.Alphabet, preserveFormatting boo
 	var encryptedStr strings.Builder
 	for _, char := range text {
 		char = unicode.ToLower(char)
-		encryptedStr.WriteRune(alphabet.ShiftLetter(char, shift, a))
+		if _, ok := a.Position(char); ok {
+			encryptedStr.WriteRune(alphabet.ShiftLetter(char, shift, a))
+		} else if preserveFormatting {
+			encryptedStr.WriteRune(char)
+		}
 	}
 	return encryptedStr.String()
 }
