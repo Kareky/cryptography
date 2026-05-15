@@ -7,12 +7,14 @@ import (
 )
 
 // Encrypt takes a message and encrypts it, moving each character inside the sentence
-// according to a cicle of shifts determined by position in the alphabet of the letters of the word passed.
-// a determines the alphabet used for the encryption.
-// The function returns the shifted string, always lowercase, preserving each space or symbol as it was in the original message.
-// It return error if encryptWord contain non-letters or letters that doesn't exists in the chosen alphabet.
-// If the encryptWord is empty, the text is returned unchanged
-func Encrypt(text string, encryptWord string, a alphabet.Alphabet) (string, error) {
+// according to a cycle of shifts determined by the position in the alphabet of the letters
+// of the key word passed.
+// a determines the alphabet used for the cipher.
+// The function returns the encrypted string, always lowercase, preserving each space or symbol
+// as it was in the original message.
+// It returns an error if encryptWord contains non-letters or letters that don't exist in the chosen alphabet.
+// If encryptWord is empty, the text is returned unchanged.
+func Encrypt(text, encryptWord string, a alphabet.Alphabet) (string, error) {
 	if len(encryptWord) == 0 {
 		return text, nil
 	}
@@ -37,11 +39,13 @@ func Encrypt(text string, encryptWord string, a alphabet.Alphabet) (string, erro
 	return encryptedStr.String(), nil
 }
 
-// toEncryptSequence transform an encrypt word into a slice of numbers
-// it return error if the characters into the word aren't known inside the alphabet
+// toEncryptSequence transforms a key word into a slice of shift values,
+// based on each letter's position in the alphabet.
+// It returns an error if any character in the word is not in the alphabet.
 func toEncryptSequence(encryptWord string, a alphabet.Alphabet) ([]int, error) {
 	var encryptSequence []int
 	for _, char := range encryptWord {
+		char = unicode.ToLower(char)
 		if pos, ok := a.Position(char); ok {
 			encryptSequence = append(encryptSequence, pos)
 		} else {
@@ -50,4 +54,29 @@ func toEncryptSequence(encryptWord string, a alphabet.Alphabet) ([]int, error) {
 	}
 
 	return encryptSequence, nil
+}
+
+// Decrypt takes a message and decrypts it, moving each character inside the sentence
+// according to a cycle of shifts determined by the inverse of the position in the alphabet
+// of the letters of the key word passed.
+// a determines the alphabet used for the cipher.
+// The function returns the decrypted string, always lowercase, preserving each space or symbol
+// as it was in the original message.
+// It returns an error if decryptWord contains non-letters or letters that don't exist in the chosen alphabet.
+// If decryptWord is empty, the text is returned unchanged.
+func Decrypt(text, decryptWord string, a alphabet.Alphabet) (string, error) {
+	var encryptWord strings.Builder
+	for _, char := range decryptWord {
+		char = unicode.ToLower(char)
+		pos, ok := a.Position(char)
+		if !ok {
+			return "", alphabet.ErrAlphabetMismatch
+		}
+
+		newPosition := (a.Len() - pos)%a.Len()
+		char = a.RuneFor(newPosition)
+		encryptWord.WriteRune(char)
+	}
+
+	return Encrypt(text, encryptWord.String(), a)
 }
