@@ -69,3 +69,15 @@ func generatePad(length int, max int) ([]int, error) {
 	
 	return seq, nil
 }
+
+// GenerateBytes returns a slice of length cryptographically secure random bytes.
+// It returns an error if the random source fails.
+func GenerateBytes(length int) ([]byte, error) {
+	var out = make([]byte, length)
+	_, err := rand.Read(out)
+	if err != nil {
+		return nil, err
+	}
+
+	return out, nil
+}
