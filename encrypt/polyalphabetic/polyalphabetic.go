@@ -12,8 +12,8 @@ import (
 // a determines the alphabet used for the cipher.
 // The function returns the encrypted string, always lowercase, preserving each space or symbol
 // as it was in the original message. If the intent is to remove them, call EncryptStripped instead.
-// It returns an error if encryptWord contains non-letters or letters that don't exist in the chosen alphabet.
-// If encryptWord is empty, the text is returned unchanged.
+// It returns an error if encryptWord contains non-letters or letters that don't exist in the chosen alphabet
+// or if the a is nil. If encryptWord is empty, the text is returned unchanged.
 func Encrypt(text, encryptWord string, a alphabet.Alphabet) (string, error) {
 	return encrypt(text, encryptWord, a, true)
 }
@@ -24,8 +24,8 @@ func Encrypt(text, encryptWord string, a alphabet.Alphabet) (string, error) {
 // a determines the alphabet used for the cipher.
 // The function returns the encrypted string, always lowercase, with all spaces and symbols removed.
 // If the intent is to preserve them, call Encrypt instead
-// It returns an error if encryptWord contains non-letters or letters that don't exist in the chosen alphabet.
-// If encryptWord is empty, the text is returned unchanged.
+// It returns an error if encryptWord contains non-letters or letters that don't exist in the chosen alphabet
+// or if the a is nil. If encryptWord is empty, the text is returned unchanged.
 func EncryptStripped(text, encryptWord string, a alphabet.Alphabet) (string, error) {
 	return encrypt(text, encryptWord, a, false)
 }
@@ -36,6 +36,10 @@ func EncryptStripped(text, encryptWord string, a alphabet.Alphabet) (string, err
 func encrypt(text, encryptWord string, a alphabet.Alphabet, preserveFormatting bool) (string, error) {
 	if len(encryptWord) == 0 {
 		return text, nil
+	}
+
+	if a == nil {
+		return "", alphabet.ErrAlphabetNil
 	}
 
 	var encryptedStr strings.Builder
@@ -84,9 +88,13 @@ func toEncryptSequence(encryptWord string, a alphabet.Alphabet) ([]int, error) {
 // a determines the alphabet used for the cipher.
 // The function returns the decrypted string, always lowercase, preserving each space or symbol
 // as it was in the original message.
-// It returns an error if decryptWord contains non-letters or letters that don't exist in the chosen alphabet.
-// If decryptWord is empty, the text is returned unchanged.
+// It returns an error if decryptWord contains non-letters or letters that don't exist in the chosen alphabet,
+// or if a is nil. If decryptWord is empty, the text is returned unchanged.
 func Decrypt(text, decryptWord string, a alphabet.Alphabet) (string, error) {
+	if a == nil {
+		return "", alphabet.ErrAlphabetNil
+	}
+
 	var encryptWord strings.Builder
 	for _, char := range decryptWord {
 		char = unicode.ToLower(char)

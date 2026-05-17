@@ -19,16 +19,24 @@ func GeneratePad(length int, max int) ([]int, error) {
 // GeneratePadWithAlphabet generates a sequence of cryptographically secure random integers.
 // The number of integers is determined by length, and the exclusive upper bound for each
 // integer is the length of the given alphabet (a.Len()). It returns an error if the
-// random source fails.
+// random source fails, or if a is nil.
 func GeneratePadWithAlphabet(length int, a alphabet.Alphabet) ([]int, error) {
+	if a == nil {
+		return nil, alphabet.ErrAlphabetNil
+	}
+
 	return generatePad(length, a.Len())
 }
 
 // GeneratePadFromText generates a sequence of cryptographically secure random integers.
 // The number of integers is determined by the number of characters in text that belong to a.
 // Each integer is in the range [0, a.Len()). The text is lowercased before validation.
-// It returns an error if the random source fails.
+// It returns an error if the random source fails, or if a is nil.
 func GeneratePadFromText(text string, a alphabet.Alphabet) ([]int, error) {
+	if a == nil {
+		return nil, alphabet.ErrAlphabetNil
+	}
+
 	var length = 0
 	for _, char := range text {
 		char = unicode.ToLower(char)
