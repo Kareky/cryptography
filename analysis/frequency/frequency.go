@@ -20,7 +20,12 @@ type FreqResult struct {
 // appears in text. It lowercases the text and ignores characters not in the alphabet.
 // The returned slice has length a.Len(). It return FreqResult,
 // which can be cast to the desired result.
+// It panics if a is nil.
 func LetterFrequency(text string, a alphabet.Alphabet) *FreqResult {
+	if a == nil {
+		panic("frequency: " + alphabet.ErrAlphabetNil.Error())
+	}
+
 	freq := make([]int, a.Len())
 	for _, char := range text {
 		char = unicode.ToLower(char)

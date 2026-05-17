@@ -10,6 +10,7 @@ import (
 // according to shift. a determines the alphabet used for the encryption.
 // The function returns the shifted string, always lowercase,
 // preserving each space or symbol as it was in the original message.
+// It panics if a is nil.
 func Encrypt(text string, shift int, a alphabet.Alphabet) string {
 	return encrypt(text, shift, a, true)
 }
@@ -18,6 +19,7 @@ func Encrypt(text string, shift int, a alphabet.Alphabet) string {
 // according to shift. a determines the alphabet used for the encryption.
 // The function returns the shifted string, always lowercase,
 // with all spaces and symbols removed.
+// It panics if a is nil.
 func EncryptStripped(text string, shift int, a alphabet.Alphabet) string {
 	return encrypt(text, shift, a, false)
 }
@@ -25,7 +27,12 @@ func EncryptStripped(text string, shift int, a alphabet.Alphabet) string {
 // encrypt contains the core logic of encryption as described in Encrypt and EncryptStripped.
 // preserveFormatting is a boolean that decide if formatting will be kept during characters shifting,
 // or if they will be removed.
+// It panics if a is nil.
 func encrypt(text string, shift int, a alphabet.Alphabet, preserveFormatting bool) string {
+	if a == nil {
+		panic("caesar: " + alphabet.ErrAlphabetNil.Error())
+	}
+
 	var encryptedStr strings.Builder
 	for _, char := range text {
 		char = unicode.ToLower(char)
@@ -42,6 +49,7 @@ func encrypt(text string, shift int, a alphabet.Alphabet, preserveFormatting boo
 // a determines the alphabet used for the encryption.
 // The function returns the shifted string, always lowercase,
 // preserving each space or symbol as it was in the original message.
+// It panics if a is nil.
 func Decrypt(text string, shift int, a alphabet.Alphabet) string {
 	return Encrypt(text, -shift, a)
 }
