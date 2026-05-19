@@ -57,7 +57,6 @@ func TestEncrypt(t *testing.T) {
 }
 
 func TestDecrypt(t *testing.T) {
-	// Since Decrypt is just Encrypt, a round‑trip test suffices.
 	original := []byte("secret message")
 	key := []byte{0x12, 0x34, 0x56}
 	enc := xor.Encrypt(original, key)
@@ -79,7 +78,6 @@ func TestEncryptWithPad(t *testing.T) {
 	if len(pad) != len(data) {
 		t.Errorf("pad length = %d, want %d", len(pad), len(data))
 	}
-	// Decrypt should recover original
 	dec := xor.Decrypt(cipher, pad)
 	if !bytes.Equal(dec, data) {
 		t.Errorf("Decrypt(cipher, pad) = %s, want %s", dec, data)
