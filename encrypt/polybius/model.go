@@ -79,7 +79,7 @@ func NewSquare(name string, mapping map[coordinates.Coordinate]rune, aliases map
         for c := range side {
             if char, exists := mapping[coordinates.New(r, c)]; !exists {
                 return nil, ErrMissingCoordinate
-            } else if !unicode.IsLower(char) {
+            } else if !unicode.IsLower(char) && unicode.IsLetter(char) {
 				return nil, ErrMissingLowerCase(coordinates.New(r, c))
 			}
         }
