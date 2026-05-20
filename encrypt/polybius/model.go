@@ -92,6 +92,24 @@ func NewSquare(name string, mapping map[coordinates.Coordinate]rune, aliases map
 	}, nil
 }
 
+// GridToMap returns a coordinate‑to‑rune mapping from a 2‑D rune grid.
+// It rejects cells with no runes or uppercase letters, but accepts symbols.
+func GridToMap(grid [][]rune) (map[coordinates.Coordinate]rune, error) {
+	var mapping = map[coordinates.Coordinate]rune{}
+	for r, rows := range grid {
+		for c, char := range rows {
+			if char == 0 {
+				return nil, ErrMissingCoordinate
+			} else if !unicode.IsLower(char) && unicode.IsLetter(char) {
+				return nil, ErrMissingLowerCase(coordinates.New(r, c))
+			}
+			mapping[coordinates.New(r, c)] = char
+		}
+	}
+
+	return mapping, nil
+}
+
 // LatinNoZSquare is a 5×5 square containing a‑y; 'z' is aliased to 's'.
 var LatinNoZSquare, _ = NewSquare("LatinNoZ", LatinNoZ, LatinNoZAliases)
 
@@ -99,7 +117,14 @@ var LatinNoZSquare, _ = NewSquare("LatinNoZ", LatinNoZ, LatinNoZAliases)
 var LatinNoJSquare, _ = NewSquare("LatinNoJ", LatinNoJ, LatinNoJAliases)
 
 // LatinNoZ is the mapping for a 5×5 square with letters a‑y.
-var LatinNoZ = map[coordinates.Coordinate]rune {
+var LatinNoZ, _ = GridToMap([][]rune{
+	{'a','b','c','d','e'},
+	{'f','g','h','i','j'},
+	{'k','l','m','n','o'},
+	{'p','q','r','s','t'},
+	{'u','v','w','x','y'},
+})
+/*var LatinNoZ = map[coordinates.Coordinate]rune {
 	coordinates.New(0, 0): 'a',
 	coordinates.New(0, 1): 'b',
 	coordinates.New(0, 2): 'c',
@@ -125,10 +150,17 @@ var LatinNoZ = map[coordinates.Coordinate]rune {
 					coordinates.New(4, 2): 'w',
 					coordinates.New(4, 3): 'x',
 					coordinates.New(4, 4): 'y',
-}
+}*/
 
 // LatinNoJ is the mapping for a 5×5 square with letters a‑z, merging 'j' into 'i'.
-var LatinNoJ = map[coordinates.Coordinate]rune {
+var LatinNoJ, _ = GridToMap([][]rune{
+	{'a','b','c','d','e'},
+	{'f','g','h','i','k'},
+	{'l','m','n','o','p'},
+	{'q','r','s','t','u'},
+	{'v','w','x','y','z'},
+})
+/*var LatinNoJ = map[coordinates.Coordinate]rune {
 	coordinates.New(0, 0): 'a',
 	coordinates.New(0, 1): 'b',
 	coordinates.New(0, 2): 'c',
@@ -154,7 +186,7 @@ var LatinNoJ = map[coordinates.Coordinate]rune {
 					coordinates.New(4, 2): 'x',
 					coordinates.New(4, 3): 'y',
 					coordinates.New(4, 4): 'z',
-}
+}*/
 
 // LatinNoZAliases maps 'z' to 's' and includes all common accents.
 var LatinNoZAliases = func() map[rune]rune {
